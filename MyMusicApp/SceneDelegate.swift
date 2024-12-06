@@ -11,12 +11,50 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        let tabBarController: UITabBarController = UITabBarController()
+        let homeVC: UIViewController = HomeViewController()
+        let searchVC: UIViewController = SearchViewController()
+        let myLibVC: UIViewController = MyLibraryViewController()
+        
+        var homeTabBarItem: UITabBarItem = UITabBarItem(
+            title: "Home",
+            image: UIImage(named: "ic-home"),
+            tag: 0
+        )
+        var searchTabBarItem: UITabBarItem = UITabBarItem(
+            title: "Search",
+            image: UIImage(named: "ic-search"),
+            tag: 1
+        )
+        var myLibTabBarItem: UITabBarItem = UITabBarItem(
+            title: "test",
+            image: UIImage(named: "ic-library_white"),
+            tag: 2
+        )
+        
+        homeVC.tabBarItem = homeTabBarItem
+        searchVC.tabBarItem = searchTabBarItem
+        myLibVC.tabBarItem = myLibTabBarItem
+
+        // Assign the view controllers to the tab bar controller
+        tabBarController.viewControllers = [homeVC, searchVC, myLibVC]
+
+        UITabBar.appearance().backgroundColor = ColorTool.darkPrimary
+        UITabBar.appearance().tintColor = ColorTool.lightPrimary
+        UITabBar.appearance().unselectedItemTintColor = ColorTool.darkSecondary
+        
+        // Set up the window and make the tab bar controller the root
+        if let windowScene = scene as? UIWindowScene {
+            window = UIWindow(windowScene: windowScene)
+            window?.rootViewController = tabBarController
+            window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
