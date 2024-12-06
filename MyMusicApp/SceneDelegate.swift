@@ -22,18 +22,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let searchVC: UIViewController = SearchViewController()
         let myLibVC: UIViewController = MyLibraryViewController()
         
-        var homeTabBarItem: UITabBarItem = UITabBarItem(
+        let homeTabBarItem: UITabBarItem = UITabBarItem(
             title: "Home",
             image: UIImage(named: "ic-home"),
             tag: 0
         )
-        var searchTabBarItem: UITabBarItem = UITabBarItem(
+        let searchTabBarItem: UITabBarItem = UITabBarItem(
             title: "Search",
             image: UIImage(named: "ic-search"),
             tag: 1
         )
-        var myLibTabBarItem: UITabBarItem = UITabBarItem(
-            title: "test",
+        let myLibTabBarItem: UITabBarItem = UITabBarItem(
+            title: "My Library",
             image: UIImage(named: "ic-library_white"),
             tag: 2
         )
