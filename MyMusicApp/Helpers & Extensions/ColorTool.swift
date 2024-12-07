@@ -11,6 +11,7 @@ import UIKit
 public final class ColorTool: UIColor, @unchecked Sendable {
     static var darkPrimary: UIColor = UIColor.black
     static var darkSecondary: UIColor = UIColor.darkGray
+    static var darkTrayBackground: UIColor = UIColor(hex: "#333333")
     static var lightPrimary: UIColor = UIColor.white
     static var greenTheme: UIColor = UIColor(hex: "#1ED760")
 }
