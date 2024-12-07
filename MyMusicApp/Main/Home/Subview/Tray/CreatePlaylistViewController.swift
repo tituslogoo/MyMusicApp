@@ -9,10 +9,15 @@ import Foundation
 import SnapKit
 import UIKit
 
+protocol CreatePlaylistViewControllerDelegate: AnyObject {
+    func createPlaylist(with name: String)
+}
+
 final class CreatePlaylistViewController: UIViewController {
     // MARK: Properties
     private let buttonHeight: CGFloat = 52
     private let textFieldHorizontalSpacer: CGFloat = 32.0
+    weak var delegate: CreatePlaylistViewControllerDelegate?
     
     // MARK:  UI
     private lazy var titleLabel: UILabel = {
@@ -45,6 +50,11 @@ final class CreatePlaylistViewController: UIViewController {
         button.backgroundColor = ColorTool.greenTheme
         button.layer.cornerRadius = buttonHeight / 2
         button.clipsToBounds = true
+        button.addTarget(
+            self,
+            action: #selector(createButtonDidTapped),
+            for: .touchUpInside
+        )
         return button
     }()
     
@@ -93,5 +103,10 @@ private extension CreatePlaylistViewController {
             make.width.equalTo(140.0)
             make.centerX.equalToSuperview()
         }
+    }
+    
+    @objc
+    func createButtonDidTapped() {
+        delegate?.createPlaylist(with: textField.text ?? "")
     }
 }

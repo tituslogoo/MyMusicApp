@@ -41,9 +41,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         homeVC.tabBarItem = homeTabBarItem
         searchVC.tabBarItem = searchTabBarItem
         myLibVC.tabBarItem = myLibTabBarItem
-
+        
         // Assign the view controllers to the tab bar controller
-        tabBarController.viewControllers = [homeVC, searchVC, myLibVC]
+        let homeNavVC: UINavigationController = UINavigationController(rootViewController: homeVC)
+        tabBarController.viewControllers = [homeNavVC, searchVC, myLibVC]
 
         UITabBar.appearance().backgroundColor = ColorTool.darkPrimary
         UITabBar.appearance().tintColor = ColorTool.lightPrimary
