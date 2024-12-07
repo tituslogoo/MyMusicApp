@@ -6,5 +6,6 @@ target 'MyMusicApp' do
   use_frameworks!
 	
   # Pods for MyMusicApp
-	pod 'SnapKit', '~> 5.7.0'
+  pod 'Kingfisher', '~> 8.0'
+  pod 'SnapKit', '~> 5.7.0'
 end
