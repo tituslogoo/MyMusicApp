@@ -73,9 +73,21 @@ private extension HomeViewController {
     }
 }
 
+// MARK: HomeHeaderSectionViewDelegate
 extension HomeViewController: HomeHeaderSectionViewDelegate {
     func onPlusButtonTapped() {
         let trayVC = HomeAddPlaylistTrayViewController()
+        trayVC.delegate = self
         present(trayVC, animated: true)
+    }
+}
+
+// MARK: HomeAddPlaylistTrayViewControllerDelegate
+extension HomeViewController: HomeAddPlaylistTrayViewControllerDelegate {
+    func onPlaylistButtonTapped() {
+        dismiss(animated: true, completion: {
+            let trayVC = CreatePlaylistViewController()
+            self.present(trayVC, animated: true)
+        })
     }
 }

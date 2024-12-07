@@ -98,8 +98,7 @@ private extension HomeHeaderSectionView {
             make.size.equalTo(plusButtonSize)
             make.leading.lessThanOrEqualTo(headerLabel.snp.trailing)
             make.trailing.equalToSuperview().offset(-12.0)
-            make.top.equalToSuperview().offset(Self.verticalSpacer)
-            make.bottom.equalToSuperview().offset(-Self.verticalSpacer)
+            make.centerY.equalToSuperview()
         }
     }
     
