@@ -10,7 +10,7 @@ import Kingfisher
 import SnapKit
 import UIKit
 
-protocol HomeHeaderSectionViewProtocol {
+protocol HomeHeaderSectionViewDelegate {
     func onPlusButtonTapped()
 }
 
@@ -18,10 +18,10 @@ final class HomeHeaderSectionView: UIView {
     // MARK: Properties
     static let profilePictureSize: CGSize = CGSize(width: 34.0, height: 34.0)
     static let verticalSpacer: CGFloat = 8.0
-    let plusButtonSize: CGSize = CGSize(width: 26.0, height: 26.0)
+    private let plusButtonSize: CGSize = CGSize(width: 26.0, height: 26.0)
     
     private let imageurl: String
-    var delegate: HomeHeaderSectionViewProtocol?
+    var delegate: HomeHeaderSectionViewDelegate?
     
     // MARK: UI
     private lazy var profileImageView: UIImageView = {
@@ -49,6 +49,8 @@ final class HomeHeaderSectionView: UIView {
         imageView.image = UIImage(named: "ic_add")
         
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onPlusButtonDidTapped))
+        imageView.addGestureRecognizer(tapGesture)
+        imageView.isUserInteractionEnabled = true
         
         return imageView
     }()

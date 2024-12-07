@@ -17,6 +17,7 @@ final class HomeViewController: UIViewController {
     // MARK: UI
     private lazy var headerView: HomeHeaderSectionView = {
         let view = HomeHeaderSectionView(imageUrl: viewModel.profilePictureUrl)
+        view.delegate = self
         return view
     }()
     
@@ -69,5 +70,12 @@ private extension HomeViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(viewHeight)
         }
+    }
+}
+
+extension HomeViewController: HomeHeaderSectionViewDelegate {
+    func onPlusButtonTapped() {
+        let trayVC = HomeAddPlaylistTrayViewController()
+        present(trayVC, animated: true)
     }
 }
