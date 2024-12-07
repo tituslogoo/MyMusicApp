@@ -20,6 +20,11 @@ final class HomeViewController: UIViewController {
         return view
     }()
     
+    private lazy var separatorView: HomeSeparatorSectionView = {
+        let view = HomeSeparatorSectionView()
+        return view
+    }()
+    
     // MARK: Init
     init(viewModel: HomeViewModelProtocol? = nil) {
         self.viewModel = viewModel ?? HomeViewModel()
@@ -42,6 +47,7 @@ private extension HomeViewController {
     func setupUI() {
         view.backgroundColor = ColorTool.darkPrimary
         setHeader()
+        setSeparatorView()
     }
     
     func setHeader() {
@@ -51,6 +57,17 @@ private extension HomeViewController {
         headerView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(headerViewHeight)
+        }
+    }
+    
+    func setSeparatorView() {
+        let viewHeight: CGFloat = HomeSeparatorSectionView.calculateHeight()
+        
+        view.addSubview(separatorView)
+        separatorView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(viewHeight)
         }
     }
 }
