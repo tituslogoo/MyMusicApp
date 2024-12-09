@@ -78,8 +78,10 @@ private extension MyLibraryViewController {
     }
     
     func onPlaylistDidCreated(withName name: String) {
-        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: .init(name: name))
+        let newPlaylist = PlaylistModel(name: name)
+        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: newPlaylist)
         let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
+        PlaylistManager.savePlaylist(playlist: newPlaylist)
         navigationController?.pushViewController(playlistVC, animated: true)
     }
 }

@@ -11,14 +11,22 @@ import UIKit
 
 final class AddPlaylistTrayView: UIView {
     // MARK: - Properties
-    private let iconImageView: UIImageView = {
+    private lazy var horizontalStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [iconImageView, textStackView])
+        stackView.axis = .horizontal
+        stackView.spacing = 12.0
+        stackView.distribution = .fill
+        return stackView
+    }()
+    
+    private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "ic_playlist")
         return imageView
     }()
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Playlist"
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -26,7 +34,7 @@ final class AddPlaylistTrayView: UIView {
         return label
     }()
     
-    private let subtitleLabel: UILabel = {
+    private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Create a playlist with a song"
         label.font = UIFont.systemFont(ofSize: 14)
@@ -58,19 +66,18 @@ final class AddPlaylistTrayView: UIView {
         layer.cornerRadius = 10.0
         clipsToBounds = true
         
-        addSubview(iconImageView)
-        addSubview(textStackView)
+        let bottomSpacer: CGFloat = UITool.hasNotch() ? 36.0 : 16.0
         
-        iconImageView.snp.makeConstraints { make in
+        addSubview(horizontalStackView)
+        horizontalStackView.snp.makeConstraints { make in
+            make.top.greaterThanOrEqualToSuperview().offset(8.0)
             make.leading.equalToSuperview().offset(16.0)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(40.0)
+            make.trailing.equalToSuperview().offset(-16.0)
+            make.bottom.equalToSuperview().offset(-bottomSpacer)
         }
         
-        textStackView.snp.makeConstraints { make in
-            make.leading.equalTo(iconImageView.snp.trailing).offset(12.0)
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(16.0)
+        iconImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(40.0)
         }
     }
 }

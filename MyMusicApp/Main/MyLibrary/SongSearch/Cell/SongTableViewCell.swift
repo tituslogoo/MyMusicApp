@@ -14,6 +14,7 @@ final class SongTableViewCell: UITableViewCell {
     // MARK: Properties
     private let verticalSpacer: CGFloat = 2.0
     private let songImageViewSize: CGSize = CGSize(width: 50.0, height: 50.0)
+    private let moreButtonSize: CGSize = CGSize(width: 21.0, height: 50.0)
     
     var currentMediaItem: MediaItem?
     private var cellState: SongTableViewCellType = .addSong // default value
@@ -49,6 +50,14 @@ final class SongTableViewCell: UITableViewCell {
         return stackView
     }()
     
+    /// For now this button is only an accessory
+    private lazy var moreImageButton: UIImageView = {
+        let imageView: UIImageView = UIImageView()
+        imageView.contentMode = .center
+        imageView.image = UIImage(named: "ic_more")
+        return imageView
+    }()
+    
     // MARK: Public Functions
     func configure(with data: MediaItem, cellState: SongTableViewCellType) {
         self.cellState = cellState
@@ -67,6 +76,7 @@ private extension SongTableViewCell {
         setupBackground()
         setupSongImageView()
         setupTextLabels()
+        setupMoreButton()
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.snp.makeConstraints { make in
@@ -101,7 +111,6 @@ private extension SongTableViewCell {
             make.top.greaterThanOrEqualTo(contentView.snp.top)
             make.leading.equalTo(songImageView.snp.trailing).offset(16.0)
             make.centerY.equalTo(contentView.snp.centerY)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-16.0)
             make.bottom.lessThanOrEqualTo(contentView.snp.bottom)
         }
         
@@ -112,6 +121,20 @@ private extension SongTableViewCell {
         subtitleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
         }
+    }
+    
+    func setupMoreButton() {
+        contentView.addSubview(moreImageButton)
+        moreImageButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(verticalSpacer)
+            make.leading.equalTo(textStackView.snp.trailing).offset(16.0)
+            make.size.equalTo(moreButtonSize)
+            make.centerY.equalToSuperview()
+            make.trailing.equalTo(contentView.snp.trailing).offset(-16.0)
+            make.bottom.equalToSuperview().offset(-verticalSpacer)
+        }
+        
+        moreImageButton.isHidden = cellState == .addSong
     }
     
     func handleData(withData data: MediaItem) {

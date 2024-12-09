@@ -26,6 +26,7 @@ final class PlaylistDetailViewModel: PlaylistDetailViewModelProtocol {
     
     func updatePlaylist(with playlist: PlaylistModel) {
         self.playlist = playlist
+        PlaylistManager.savePlaylist(playlist: self.playlist)
         action?.notifyToReloadData()
     }
 }

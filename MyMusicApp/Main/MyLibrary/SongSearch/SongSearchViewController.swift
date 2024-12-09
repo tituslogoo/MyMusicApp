@@ -184,7 +184,9 @@ extension SongSearchViewController: SongSearchViewModelAction {
     }
     
     func notifyToShowError(withMessage errorMessage: String) {
-        showError(errorMessage: errorMessage)
+        DispatchQueue.main.async {
+            self.showError(errorMessage: errorMessage)
+        }
     }
 }
 
