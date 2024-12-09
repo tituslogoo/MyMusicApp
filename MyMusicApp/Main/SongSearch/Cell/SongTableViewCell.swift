@@ -16,12 +16,11 @@ final class SongTableViewCell: UITableViewCell {
     private let songImageViewSize: CGSize = CGSize(width: 50.0, height: 50.0)
     
     var currentMediaItem: MediaItem?
+    private var cellState: SongTableViewCellType = .addSong // default value
     
     private lazy var songImageView: UIImageView = {
         let imageView: UIImageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = songImageViewSize.height / 2
         return imageView
     }()
     
@@ -51,7 +50,8 @@ final class SongTableViewCell: UITableViewCell {
     }()
     
     // MARK: Public Functions
-    func configure(with data: MediaItem) {
+    func configure(with data: MediaItem, cellState: SongTableViewCellType) {
+        self.cellState = cellState
         if !songImageView.isDescendant(of: contentView) {
             setupUI()
         }
@@ -63,10 +63,24 @@ final class SongTableViewCell: UITableViewCell {
 // MARK: Private Functions
 private extension SongTableViewCell {
     func setupUI() {
-        backgroundColor = ColorTool.darkPrimary
-        contentView.backgroundColor = ColorTool.darkPrimary
-        contentView.addSubview(songImageView)
+        selectionStyle = .none
+        setupBackground()
+        setupSongImageView()
+        setupTextLabels()
         
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    func setupBackground() {
+        backgroundColor = ColorTool.clear
+        contentView.backgroundColor = ColorTool.clear
+    }
+    
+    func setupSongImageView() {
+        contentView.addSubview(songImageView)
         songImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(verticalSpacer)
             make.leading.equalToSuperview().offset(16.0)
@@ -74,6 +88,14 @@ private extension SongTableViewCell {
             make.bottom.equalToSuperview().offset(-verticalSpacer)
         }
         
+        songImageView.layer.cornerRadius = cellState == .addSong
+        ? songImageViewSize.height / 2
+        : 0
+        
+        songImageView.clipsToBounds = cellState == .addSong
+    }
+    
+    func setupTextLabels() {
         contentView.addSubview(textStackView)
         textStackView.snp.makeConstraints { make in
             make.top.greaterThanOrEqualTo(contentView.snp.top)
@@ -88,13 +110,6 @@ private extension SongTableViewCell {
         }
         
         subtitleLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-        }
-        
-        let contentHeight: CGFloat = songImageViewSize.height + (verticalSpacer * 2)
-        
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
         }
     }

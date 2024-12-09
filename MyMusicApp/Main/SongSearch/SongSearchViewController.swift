@@ -9,11 +9,16 @@ import Foundation
 import SnapKit
 import UIKit
 
+protocol SongSearchViewControllerDelegate: AnyObject {
+    func updatePlaylist(with playlist: PlaylistModel)
+}
+
 final class SongSearchViewController: UIViewController {
     // MARK: Properties
     private let searchImageSize: CGFloat = 12.0
     private let searchBarBackgroundHeight: CGFloat = 35.0
     
+    weak var delegate: SongSearchViewControllerDelegate?
     private var viewModel: SongSearchViewModelProtocol
     
     // MARK: UI
@@ -57,7 +62,10 @@ final class SongSearchViewController: UIViewController {
         label.textColor = ColorTool.lightPrimary
         label.textAlignment = .center
         
-        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onCloseButtonDidTapped))
+        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(onCloseButtonDidTapped)
+        )
         label.addGestureRecognizer(tapGesture)
         label.isUserInteractionEnabled = true
         
@@ -105,7 +113,7 @@ private extension SongSearchViewController {
     func setupSearchBar() {
         view.addSubview(searchBarContainerView)
         searchBarContainerView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide).offset(8.0)
             make.height.equalTo(searchBarBackgroundHeight)
         }
         
@@ -176,18 +184,7 @@ extension SongSearchViewController: SongSearchViewModelAction {
     }
     
     func notifyToShowError(withMessage errorMessage: String) {
-        let alert = UIAlertController(
-            title: "Error",
-            message: errorMessage,
-            preferredStyle: .alert
-        )
-        
-        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            self.dismiss(animated: true)
-        }
-        alert.addAction(okAction)
-        
-        present(alert, animated: true, completion: nil)
+        showError(errorMessage: errorMessage)
     }
 }
 
@@ -199,7 +196,7 @@ extension SongSearchViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell: SongTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell") as? SongTableViewCell,
            let mediaItem = viewModel.mediaItems?[indexPath.row] {
-            cell.configure(with: mediaItem)
+            cell.configure(with: mediaItem, cellState: .addSong)
             return cell
         }
         
@@ -207,9 +204,18 @@ extension SongSearchViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let mediaItem = viewModel.mediaItems?[indexPath.row]
-        guard let mediaItem else { return }
-        
-        // todo
+        viewModel.addSong(withIndex: indexPath.row) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                self.delegate?.updatePlaylist(with: self.viewModel.currentPlaylist)
+                self.dismiss(animated: true)
+                break
+            case .failure(let errorMessage):
+                self.showError(errorMessage: errorMessage)
+                break
+            }
+        }
     }
 }

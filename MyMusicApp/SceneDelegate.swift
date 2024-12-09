@@ -19,8 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController: UITabBarController = UITabBarController()
         let homeVC: UIViewController = HomeViewController()
-//        let searchVC: UIViewController = SearchViewController()
-        let searchVC: UIViewController = SongSearchViewController(withVM: SongSearchViewModel())
+        let searchVC: UIViewController = SearchViewController()
         let myLibVC: UIViewController = MyLibraryViewController()
         
         let homeTabBarItem: UITabBarItem = UITabBarItem(

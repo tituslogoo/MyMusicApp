@@ -5,16 +5,27 @@
 //  Created by Titus Logo on 08/12/24.
 //
 
+protocol PlaylistDetailViewModelAction: AnyObject {
+    func notifyToReloadData()
+}
+
 protocol PlaylistDetailViewModelProtocol: AnyObject {
-    var playlistName: String { get }
-    var numberOfSongs: Int { get }
+    var action: PlaylistDetailViewModelAction? { get set }
+    var playlist: PlaylistModel { get }
+    
+    func updatePlaylist(with playlist: PlaylistModel)
 }
 
 final class PlaylistDetailViewModel: PlaylistDetailViewModelProtocol {
-    var playlistName: String
-    var numberOfSongs: Int = 0 //note: Change later
+    weak var action: PlaylistDetailViewModelAction?
+    var playlist: PlaylistModel
     
-    init(playlistName: String) {
-        self.playlistName = playlistName
+    init(playlist: PlaylistModel) {
+        self.playlist = playlist
+    }
+    
+    func updatePlaylist(with playlist: PlaylistModel) {
+        self.playlist = playlist
+        action?.notifyToReloadData()
     }
 }

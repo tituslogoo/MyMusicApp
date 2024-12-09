@@ -7,21 +7,30 @@
 
 import Foundation
 
+enum AddSongResultType {
+    case success
+    case failure(errorMessage: String)
+}
+
 protocol SongSearchViewModelProtocol {
     var action: SongSearchViewModelAction? { get set }
+    var currentPlaylist: PlaylistModel { get set }
     var mediaItems: [MediaItem]? { get }
     
     func searchSongs(query: String)
+    func addSong(withIndex index: Int, completion: ((AddSongResultType) -> Void))
 }
 
 final class SongSearchViewModel: SongSearchViewModelProtocol {
     // MARK: Properties
     private let dependency: SongSearchViewModelDependency
     var action: SongSearchViewModelAction?
+    var currentPlaylist: PlaylistModel
     var mediaItems: [MediaItem]?
     
     // MARK: Init
-    init(dependency: SongSearchViewModelDependency? = nil) {
+    init(currentPlaylist: PlaylistModel, dependency: SongSearchViewModelDependency? = nil) {
+        self.currentPlaylist = currentPlaylist
         self.dependency = dependency ?? SongSearchViewModelDependency()
     }
     
@@ -40,5 +49,15 @@ final class SongSearchViewModel: SongSearchViewModelProtocol {
             
             self.action?.notifyToShowError(withMessage: errorMessage)
         }
+    }
+    
+    func addSong(withIndex index: Int, completion: ((AddSongResultType) -> Void)) {
+        guard let mediaItem: MediaItem = mediaItems?[index] else {
+            completion(.failure(errorMessage: "There's something wrong"))
+            return
+        }
+        
+        currentPlaylist.songs.append(mediaItem)
+        completion(.success)
     }
 }

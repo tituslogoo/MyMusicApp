@@ -79,7 +79,7 @@ private extension HomeViewController {
     }
     
     func onPlaylistDidCreated(withName name: String) {
-        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlistName: name)
+        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: .init(name: name))
         let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
         navigationController?.pushViewController(playlistVC, animated: true)
     }
