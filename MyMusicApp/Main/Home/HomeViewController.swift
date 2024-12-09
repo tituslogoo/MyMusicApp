@@ -71,11 +71,43 @@ private extension HomeViewController {
             make.height.equalTo(viewHeight)
         }
     }
+    
+    func presentCreatePlaylistTray() {
+        let trayVC = CreatePlaylistViewController()
+        trayVC.delegate = self
+        present(trayVC, animated: true)
+    }
+    
+    func onPlaylistDidCreated(withName name: String) {
+        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlistName: name)
+        let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
+        navigationController?.pushViewController(playlistVC, animated: true)
+    }
 }
 
+// MARK: HomeHeaderSectionViewDelegate
 extension HomeViewController: HomeHeaderSectionViewDelegate {
     func onPlusButtonTapped() {
         let trayVC = HomeAddPlaylistTrayViewController()
+        trayVC.delegate = self
         present(trayVC, animated: true)
+    }
+}
+
+// MARK: HomeAddPlaylistTrayViewControllerDelegate
+extension HomeViewController: HomeAddPlaylistTrayViewControllerDelegate {
+    func onPlaylistButtonTapped() {
+        dismiss(animated: true, completion: {
+            self.presentCreatePlaylistTray()
+        })
+    }
+}
+
+// MARK: CreatePlaylistViewControllerDelegate
+extension HomeViewController: CreatePlaylistViewControllerDelegate {
+    func createPlaylist(with name: String) {
+        dismiss(animated: true, completion: {
+            self.onPlaylistDidCreated(withName: name)
+        })
     }
 }

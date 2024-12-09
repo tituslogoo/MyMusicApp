@@ -9,13 +9,24 @@ import Foundation
 import SnapKit
 import UIKit
 
+protocol HomeAddPlaylistTrayViewControllerDelegate: AnyObject {
+    func onPlaylistButtonTapped()
+}
+
 final class HomeAddPlaylistTrayViewController: UIViewController {
     // MARK: Properties
     private let minimumTrayHeight: CGFloat = 60.0
+    weak var delegate: HomeAddPlaylistTrayViewControllerDelegate?
     
     // MARK: - UI
-    private let addPlaylistTrayView: AddPlaylistTrayView = {
+    private lazy var addPlaylistTrayView: AddPlaylistTrayView = {
         let view = AddPlaylistTrayView()
+        view.isUserInteractionEnabled = true
+        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(onPlaylistButtonDidTapped)
+        )
+        view.addGestureRecognizer(tapGesture)
         return view
     }()
     
@@ -42,5 +53,10 @@ final class HomeAddPlaylistTrayViewController: UIViewController {
         
         addPlaylistTrayView.layer.cornerRadius = 12.0
         addPlaylistTrayView.clipsToBounds = true
+    }
+    
+    @objc
+    private func onPlaylistButtonDidTapped() {
+        delegate?.onPlaylistButtonTapped()
     }
 }
