@@ -8,67 +8,74 @@
 import Foundation
 
 protocol SearchFetcherProtocol: AnyObject {
+    var fetchMediaDataTask: URLSessionDataTask? { get set }
+    
     /// Fetches media items from the iTunes Search API.
     /// - Parameters:
     ///   - term: The search term (e.g., artist or song name).
-    ///   - mediaType: The type of media (e.g., music, movie).
-    ///   - completion: A closure returning an array of media items or an error.
+    ///   - successBlock: Response of the API
+    ///   - errorBlock: Error Message of API
     func fetchMedia(
         term: String,
-        mediaType: String,
-        completion: @escaping (Result<[MediaItem], Error>) -> Void
+        successBlock: (([MediaItem]) -> Void)?,
+        errorBlock: ((String) -> Void)?
     )
 }
 
 class SearchFetcher: SearchFetcherProtocol {
+    var fetchMediaDataTask: URLSessionDataTask?
     private let baseURL = "https://itunes.apple.com/search"
     
     func fetchMedia(
         term: String,
-        mediaType: String,
-        completion: @escaping (Result<[MediaItem], Error>) -> Void
+        successBlock: (([MediaItem]) -> Void)?,
+        errorBlock: ((String) -> Void)?
     ) {
-        // Prepare the URL components
-        guard var urlComponents = URLComponents(string: baseURL) else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+        guard fetchMediaDataTask == nil else {
             return
         }
         
-        // Add query parameters
+        guard var urlComponents = URLComponents(string: baseURL) else {
+            errorBlock?("InvalidURL")
+            return
+        }
+        
         urlComponents.queryItems = [
             URLQueryItem(name: "term", value: term),
-            URLQueryItem(name: "media", value: mediaType)
+            URLQueryItem(name: "media", value: "music") /// For now locked to only show music
         ]
         
-        // Create the URL
         guard let url = urlComponents.url else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            errorBlock?("InvalidURL")
             return
         }
         
-        // Create a URLSession data task
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        fetchMediaDataTask = URLSession.shared.dataTask(with: url) { data, response, error in
             // Handle error
             if let error = error {
-                completion(.failure(error))
+                self.fetchMediaDataTask = nil
+                errorBlock?(error.localizedDescription)
                 return
             }
             
             // Validate response and parse data
             guard let data = data else {
-                completion(.failure(NSError(domain: "No data", code: -1, userInfo: nil)))
+                self.fetchMediaDataTask = nil
+                errorBlock?("No Data")
                 return
             }
             
             do {
-                // Decode the JSON response
                 let searchResult = try JSONDecoder().decode(iTunesSearchResult.self, from: data)
-                completion(.success(searchResult.results))
+                self.fetchMediaDataTask = nil
+                successBlock?(searchResult.results)
+                return
             } catch {
-                completion(.failure(error))
+                self.fetchMediaDataTask = nil
+                errorBlock?(error.localizedDescription)
+                return
             }
         }
-        
-        task.resume()
+        fetchMediaDataTask?.resume()
     }
 }
