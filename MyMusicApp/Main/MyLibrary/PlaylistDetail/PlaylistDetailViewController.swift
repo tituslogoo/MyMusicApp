@@ -75,10 +75,21 @@ final class PlaylistDetailViewController: UIViewController {
         return label
     }()
     
+    private lazy var tableView: UITableView = {
+        let tableView: UITableView = UITableView()
+        tableView.backgroundColor = ColorTool.clear
+        tableView.separatorStyle = .none
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(SongTableViewCell.self, forCellReuseIdentifier: "SongTableViewCell")
+        return tableView
+    }()
+    
     // MARK: Init
     init(viewModel: PlaylistDetailViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.action = self
     }
     
     required init?(coder: NSCoder) {
@@ -101,6 +112,7 @@ private extension PlaylistDetailViewController {
         setupGradientBackground()
         setupCustomNavBar()
         setupStackView()
+        setupTableView()
     }
     
     func setupGradientBackground() {
@@ -108,13 +120,15 @@ private extension PlaylistDetailViewController {
         gradientLayer.frame = view.bounds
         
         gradientLayer.colors = [
-            UIColor(red: 36/255, green: 0/255, blue: 70/255, alpha: 1.0).cgColor,
-            UIColor.black.cgColor // Black bottom
+            ColorTool.randomColor.cgColor,
+            ColorTool.randomColor.cgColor,
+            ColorTool.darkPrimary.cgColor,
+            ColorTool.darkPrimary.cgColor
         ]
         
+        gradientLayer.locations = [0.0, 0.07, 0.18, 1.0]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
@@ -148,17 +162,16 @@ private extension PlaylistDetailViewController {
         view.addSubview(stackView)
         stackView.snp.makeConstraints { make in
             make.top.equalTo(navBarContainerView.snp.bottom).offset(8.0)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
         }
         
         setupTitleLabel()
         setupSubtitleLabel()
-        stackView.addArrangedSubview(UIView())
     }
     
     func setupTitleLabel() {
         stackView.addArrangedSubview(playlistTitleLabel)
-        playlistTitleLabel.text = viewModel.playlistName
+        playlistTitleLabel.text = viewModel.playlist.name
         
         playlistTitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(16.0)
@@ -167,14 +180,23 @@ private extension PlaylistDetailViewController {
     
     func setupSubtitleLabel() {
         stackView.addArrangedSubview(playlistSubtitleLabel)
-        playlistSubtitleLabel.text = "\(viewModel.numberOfSongs) songs"
+        playlistSubtitleLabel.text = "\(viewModel.playlist.numberOfSongs) songs"
         
         playlistSubtitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(16.0)
         }
     }
+    
+    func setupTableView() {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(stackView.snp.bottom).offset(8.0)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
 }
 
+// MARK: Actions
 private extension PlaylistDetailViewController {
     @objc
     func onBackButtonDidTapped() {
@@ -183,6 +205,49 @@ private extension PlaylistDetailViewController {
     
     @objc
     func onPlusButtonDidTapped() {
+        let viewModel: SongSearchViewModelProtocol =
+        SongSearchViewModel(currentPlaylist: viewModel.playlist)
+        let viewController: SongSearchViewController =
+        SongSearchViewController(withVM: viewModel)
+        viewController.delegate = self
         
+        present(
+            viewController,
+            animated: true,
+            completion: nil
+        )
+    }
+}
+
+// MARK: PlaylistDetailViewModelAction
+extension PlaylistDetailViewController: PlaylistDetailViewModelAction {
+    func notifyToReloadData() {
+        playlistSubtitleLabel.text = "\(viewModel.playlist.numberOfSongs) songs"
+        tableView.reloadData()
+    }
+}
+
+// MARK: SongSearchViewControllerDelegate
+extension PlaylistDetailViewController: SongSearchViewControllerDelegate {
+    func updatePlaylist(with playlist: PlaylistModel) {
+        viewModel.updatePlaylist(with: playlist)
+    }
+}
+
+// MARK: UITableViewDataSource, UITableViewDelegate
+extension PlaylistDetailViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.playlist.songs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell: SongTableViewCell =
+            tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell") as? SongTableViewCell {
+            let song = viewModel.playlist.songs[indexPath.row]
+            cell.configure(with: song, cellState: .playlist)
+            return cell
+        }
+        
+        return UITableViewCell()
     }
 }

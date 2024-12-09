@@ -1,16 +1,16 @@
 //
-//  HomeViewModel.swift
+//  MyLibraryViewModel.swift
 //  MyMusicApp
 //
 //  Created by Titus Logo on 07/12/24.
 //
 
-protocol HomeViewModelProtocol: AnyObject {
+import Foundation
+
+protocol MyLibraryViewModelProtocol: AnyObject {
     var profilePictureUrl: String { get }
 }
 
-final class HomeViewModel: HomeViewModelProtocol {
+final class MyLibraryViewModel: MyLibraryViewModelProtocol {
     var profilePictureUrl: String = "https://picsum.photos/50/50"
-    
-    
 }

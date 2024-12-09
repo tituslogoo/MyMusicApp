@@ -17,3 +17,20 @@ public final class UITool {
         return window.safeAreaInsets.top > 20
     }
 }
+
+extension UIViewController {
+    func showError(errorMessage: String?) {
+        let alert = UIAlertController(
+            title: "Error",
+            message: errorMessage ?? "There's something wrong",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(okAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+}

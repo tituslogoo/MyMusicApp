@@ -19,8 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController: UITabBarController = UITabBarController()
         let homeVC: UIViewController = HomeViewController()
-//        let searchVC: UIViewController = SearchViewController()
-        let searchVC: UIViewController = SongSearchViewController(withVM: SongSearchViewModel())
+        let searchVC: UIViewController = SearchViewController()
         let myLibVC: UIViewController = MyLibraryViewController()
         
         let homeTabBarItem: UITabBarItem = UITabBarItem(
@@ -44,8 +43,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         myLibVC.tabBarItem = myLibTabBarItem
         
         // Assign the view controllers to the tab bar controller
-        let homeNavVC: UINavigationController = UINavigationController(rootViewController: homeVC)
-        tabBarController.viewControllers = [homeNavVC, searchVC, myLibVC]
+        let libNavVC: UINavigationController = UINavigationController(rootViewController: myLibVC)
+        tabBarController.viewControllers = [homeVC, searchVC, libNavVC]
 
         UITabBar.appearance().backgroundColor = ColorTool.darkPrimary
         UITabBar.appearance().tintColor = ColorTool.lightPrimary

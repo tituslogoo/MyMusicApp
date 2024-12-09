@@ -14,6 +14,15 @@ public final class ColorTool: UIColor, @unchecked Sendable {
     static var darkTrayBackground: UIColor = UIColor(hex: "#333333")
     static var lightPrimary: UIColor = UIColor.white
     static var greenTheme: UIColor = UIColor(hex: "#1ED760")
+    
+    static var randomColor: UIColor = {
+        UIColor(
+            red: CGFloat.random(in: 0...255)/255,
+            green: CGFloat.random(in: 0...255)/255,
+            blue: CGFloat.random(in: 0...255)/255,
+            alpha: 1.0
+        )
+    }()
 }
 
 extension UIColor {
