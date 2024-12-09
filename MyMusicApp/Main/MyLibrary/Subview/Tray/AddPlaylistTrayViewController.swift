@@ -1,5 +1,5 @@
 //
-//  HomeAddPlaylistTrayViewController.swift
+//  AddPlaylistTrayViewController.swift
 //  MyMusicApp
 //
 //  Created by Titus Logo on 07/12/24.
@@ -13,7 +13,7 @@ protocol HomeAddPlaylistTrayViewControllerDelegate: AnyObject {
     func onPlaylistButtonTapped()
 }
 
-final class HomeAddPlaylistTrayViewController: UIViewController {
+final class AddPlaylistTrayViewController: UIViewController {
     // MARK: Properties
     private let minimumTrayHeight: CGFloat = 60.0
     weak var delegate: HomeAddPlaylistTrayViewControllerDelegate?

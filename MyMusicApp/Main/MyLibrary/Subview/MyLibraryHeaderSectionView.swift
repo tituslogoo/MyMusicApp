@@ -1,5 +1,5 @@
 //
-//  HomeHeaderSectionView.swift
+//  MyLibraryHeaderSectionView.swift
 //  MyMusicApp
 //
 //  Created by Titus Logo on 07/12/24.
@@ -14,7 +14,7 @@ protocol HomeHeaderSectionViewDelegate {
     func onPlusButtonTapped()
 }
 
-final class HomeHeaderSectionView: UIView {
+final class MyLibraryHeaderSectionView: UIView {
     // MARK: Properties
     static let profilePictureSize: CGSize = CGSize(width: 34.0, height: 34.0)
     static let verticalSpacer: CGFloat = 8.0
@@ -74,7 +74,7 @@ final class HomeHeaderSectionView: UIView {
 }
 
 // MARK: Private Functions
-private extension HomeHeaderSectionView {
+private extension MyLibraryHeaderSectionView {
     func setupView() {
         backgroundColor = ColorTool.darkPrimary
         

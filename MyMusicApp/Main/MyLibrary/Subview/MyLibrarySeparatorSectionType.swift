@@ -1,5 +1,5 @@
 //
-//  HomeSeparatorSectionType.swift
+//  MyLibrarySeparatorSectionType.swift
 //  MyMusicApp
 //
 //  Created by Titus Logo on 07/12/24.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-enum HomeSeparatorSectionType {
+enum MyLibrarySeparatorSectionType {
     case list
     case grid
     

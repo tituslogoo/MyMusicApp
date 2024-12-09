@@ -93,7 +93,7 @@ private extension CreatePlaylistViewController {
             make.height.equalTo(1.0)
             make.width.equalTo(textField)
             make.centerX.equalToSuperview()
-            make.centerY.equalTo(textField.snp.bottom)
+            make.centerY.equalTo(textField.snp.bottom).offset(2.0)
         }
         
         view.addSubview(createButton)

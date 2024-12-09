@@ -1,5 +1,5 @@
 //
-//  HomeSeparatorSectionView.swift
+//  MyLibarySeparatorSectionView.swift
 //  MyMusicApp
 //
 //  Created by Titus Logo on 07/12/24.
@@ -9,16 +9,16 @@ import Foundation
 import SnapKit
 import UIKit
 
-protocol HomeSeparatorSectionViewDelegate: AnyObject {
-    func didTapContentTypeButton(withType type: HomeSeparatorSectionType)
+protocol MyLibrarySeparatorSectionViewDelegate: AnyObject {
+    func didTapContentTypeButton(withType type: MyLibrarySeparatorSectionType)
 }
 
-final class HomeSeparatorSectionView: UIView {
+final class MyLibarySeparatorSectionView: UIView {
     // MARK: Properties
-    var delegate: HomeSeparatorSectionViewDelegate?
+    var delegate: MyLibrarySeparatorSectionViewDelegate?
     
     static let buttonSize: CGSize = CGSize(width: 16.0, height: 16.0)
-    private var contentType: HomeSeparatorSectionType
+    private var contentType: MyLibrarySeparatorSectionType
     
     // MARK: UI
     private lazy var contentTypeButton: UIImageView = {
@@ -33,7 +33,7 @@ final class HomeSeparatorSectionView: UIView {
     }()
     
     // MARK: Init
-    init(with type: HomeSeparatorSectionType? = nil) {
+    init(with type: MyLibrarySeparatorSectionType? = nil) {
         contentType = type ?? .list
         super.init(frame: .zero)
         setupView()
@@ -48,7 +48,7 @@ final class HomeSeparatorSectionView: UIView {
         return buttonSize.height
     }
     
-    func onContentTypeChanged(to contentType: HomeSeparatorSectionType) {
+    func onContentTypeChanged(to contentType: MyLibrarySeparatorSectionType) {
         self.contentType = contentType
         contentTypeButton.image = contentType.imageData()
     }
