@@ -9,14 +9,14 @@ import Foundation
 import SnapKit
 import UIKit
 
-protocol HomeAddPlaylistTrayViewControllerDelegate: AnyObject {
+protocol AddPlaylistTrayViewControllerDelegate: AnyObject {
     func onPlaylistButtonTapped()
 }
 
 final class AddPlaylistTrayViewController: UIViewController {
     // MARK: Properties
     private let minimumTrayHeight: CGFloat = 60.0
-    weak var delegate: HomeAddPlaylistTrayViewControllerDelegate?
+    weak var delegate: AddPlaylistTrayViewControllerDelegate?
     
     // MARK: - UI
     private lazy var addPlaylistTrayView: AddPlaylistTrayView = {

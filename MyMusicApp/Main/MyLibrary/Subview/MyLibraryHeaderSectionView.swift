@@ -10,7 +10,7 @@ import Kingfisher
 import SnapKit
 import UIKit
 
-protocol HomeHeaderSectionViewDelegate {
+protocol MyLibraryHeaderSectionViewDelegate {
     func onPlusButtonTapped()
 }
 
@@ -21,7 +21,7 @@ final class MyLibraryHeaderSectionView: UIView {
     private let plusButtonSize: CGSize = CGSize(width: 26.0, height: 26.0)
     
     private let imageurl: String
-    var delegate: HomeHeaderSectionViewDelegate?
+    var delegate: MyLibraryHeaderSectionViewDelegate?
     
     // MARK: UI
     private lazy var profileImageView: UIImageView = {

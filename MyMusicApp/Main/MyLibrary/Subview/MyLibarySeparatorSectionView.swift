@@ -25,6 +25,7 @@ final class MyLibarySeparatorSectionView: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "ic_list")
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
         
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(oncontentTypeButtonDidTapped))
         imageView.addGestureRecognizer(tapGesture)
