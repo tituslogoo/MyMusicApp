@@ -55,7 +55,16 @@ final class MyLibraryViewController: UIViewController {
     }()
     
     private lazy var separatorView: MyLibarySeparatorSectionView = {
-        let view = MyLibarySeparatorSectionView()
+        let defaultState: MyLibrarySeparatorSectionType
+        if currentViewState == .grid {
+            defaultState = .list
+        }
+        else {
+            defaultState = .grid
+        }
+        
+        let view = MyLibarySeparatorSectionView(with: currentViewState)
+        view.delegate = self
         return view
     }()
     
@@ -197,6 +206,11 @@ private extension MyLibraryViewController {
             collectionView.reloadData()
         }
     }
+    
+    func updatePlaylistVisibility() {
+        tableView.isHidden = currentViewState == .grid
+        collectionView.isHidden = currentViewState == .list
+    }
 }
 
 // MARK: UITableViewDelegate & UITableViewDataSource
@@ -278,5 +292,17 @@ extension MyLibraryViewController: CreatePlaylistViewControllerDelegate {
         dismiss(animated: true, completion: {
             self.onPlaylistDidCreated(withName: name)
         })
+    }
+}
+
+// MARK: MyLibrarySeparatorSectionViewDelegate
+extension MyLibraryViewController: MyLibrarySeparatorSectionViewDelegate {
+    func didTapContentTypeButton(withType type: MyLibrarySeparatorSectionType) {
+        // the type passed here is the image shown in separator view, we should use the opposite for that as state.
+        
+        currentViewState = type
+        separatorView.onContentTypeChanged(to: type == .grid ? .list : .grid)
+        reloadPlaylistData()
+        updatePlaylistVisibility()
     }
 }

@@ -13,7 +13,7 @@ import UIKit
 final class PlaylistImageCompilationView: UIView {
     // MARK: Properties
     static let imageSize: CGSize = CGSize(width: 67.0, height: 67.0)
-    private let songs: [MediaItem]
+    private var songs: [MediaItem]
     private var customWidth: CGFloat?
     
     // MARK: Init
@@ -41,6 +41,11 @@ final class PlaylistImageCompilationView: UIView {
         subviews.forEach({
             $0.removeFromSuperview()
         })
+    }
+    
+    func updateData(withPlaylist playlist: PlaylistModel) {
+        songs = Array(playlist.songs.prefix(4))
+        setupUI()
     }
 }
 

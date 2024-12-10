@@ -120,6 +120,7 @@ private extension PlaylistTableViewCell {
     }
     
     func handleData(withData data: PlaylistModel) {
+        playlistImageView?.updateData(withPlaylist: data)
         titleLabel.text = data.name
         subtitleLabel.text = "Playlist • \(data.numberOfSongs) songs"
     }
