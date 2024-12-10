@@ -19,13 +19,13 @@ final class PlaylistImageCompilationView: UIView {
     init(withPlaylist playlist: PlaylistModel) {
         songs = Array(playlist.songs.prefix(4))
         super.init(frame: .zero)
-        setupUIIfNeeded()
+        setupUI()
     }
     
     init() {
         songs = []
         super.init(frame: .zero)
-        setupUIIfNeeded()
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -41,15 +41,6 @@ final class PlaylistImageCompilationView: UIView {
 
 // MARK: Private Functions
 private extension PlaylistImageCompilationView {
-    func setupUIIfNeeded() {
-//        subviews.forEach({
-//            $0.removeFromSuperview()
-//        })
-        
-        // nice to have: should validate and update image only for reuse purpose
-        setupUI()
-    }
-    
     func setupUI() {
         if songs.count == .zero {
             let imageView: UIImageView = UIImageView()

@@ -11,6 +11,9 @@ import UIKit
 
 final class MyLibraryViewController: UIViewController {
     // MARK: Properties
+    private let tabSectionHeight: CGFloat = 60.0
+    private let pillSize: CGSize = CGSize(width: 84.0, height: 34.0)
+    
     var viewModel: MyLibraryViewModelProtocol
     private var isUsingTableView: Bool = true
     
@@ -18,6 +21,34 @@ final class MyLibraryViewController: UIViewController {
     private lazy var headerView: MyLibraryHeaderSectionView = {
         let view = MyLibraryHeaderSectionView(imageUrl: viewModel.profilePictureUrl)
         view.delegate = self
+        return view
+    }()
+    
+    private lazy var tabPillSectionView: UIView = {
+        let view: UIView = UIView()
+        view.backgroundColor = ColorTool.darkPrimary
+        
+        let pillLabel: UILabel = UILabel()
+        pillLabel.text = "Playlists"
+        pillLabel.textColor = ColorTool.lightPrimary
+        
+        let playlistPillView: UIView = UIView()
+        playlistPillView.addSubview(pillLabel)
+        playlistPillView.layer.borderColor = ColorTool.lightPrimary.cgColor
+        playlistPillView.layer.borderWidth = 1
+        playlistPillView.layer.cornerRadius = pillSize.height / 2
+        playlistPillView.clipsToBounds = true
+        
+        pillLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        view.addSubview(playlistPillView)
+        playlistPillView.snp.makeConstraints { make in
+            make.size.equalTo(pillSize)
+            make.leading.equalTo(view.snp.leading).offset(16.0)
+            make.centerY.equalToSuperview()
+        }
         return view
     }()
     
@@ -74,6 +105,7 @@ private extension MyLibraryViewController {
     func setupUI() {
         view.backgroundColor = ColorTool.darkPrimary
         setHeader()
+        setPillSectionView()
         setSeparatorView()
         setTableView()
         setCollectionView()
@@ -89,12 +121,21 @@ private extension MyLibraryViewController {
         }
     }
     
+    func setPillSectionView() {
+        view.addSubview(tabPillSectionView)
+        tabPillSectionView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.height.equalTo(tabSectionHeight)
+            make.leading.trailing.equalToSuperview()
+        }
+    }
+    
     func setSeparatorView() {
         let viewHeight: CGFloat = MyLibarySeparatorSectionView.calculateHeight()
         
         view.addSubview(separatorView)
         separatorView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom)
+            make.top.equalTo(tabPillSectionView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(viewHeight)
         }
