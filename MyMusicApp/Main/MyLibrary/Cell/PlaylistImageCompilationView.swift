@@ -14,11 +14,16 @@ final class PlaylistImageCompilationView: UIView {
     // MARK: Properties
     static let imageSize: CGSize = CGSize(width: 67.0, height: 67.0)
     private let songs: [MediaItem]
+    private var customWidth: CGFloat?
     
     // MARK: Init
-    init(withPlaylist playlist: PlaylistModel) {
+    init(
+        withPlaylist playlist: PlaylistModel,
+        customWidth: CGFloat? = nil
+    ) {
         songs = Array(playlist.songs.prefix(4))
         super.init(frame: .zero)
+        self.customWidth = customWidth
         setupUI()
     }
     
@@ -42,13 +47,21 @@ final class PlaylistImageCompilationView: UIView {
 // MARK: Private Functions
 private extension PlaylistImageCompilationView {
     func setupUI() {
+        let finalImageSize: CGSize
+        if let customWidth {
+            finalImageSize = CGSize(width: customWidth, height: customWidth)
+        }
+        else {
+            finalImageSize = Self.imageSize
+        }
+        
         if songs.count == .zero {
             let imageView: UIImageView = UIImageView()
             imageView.image = UIImage(named: "ic_playlist_placeholder")
             addSubview(imageView)
             
             imageView.snp.makeConstraints { make in
-                make.size.equalTo(Self.imageSize)
+                make.size.equalTo(finalImageSize).priority(.required)
                 make.edges.equalToSuperview()
             }
         }
@@ -62,7 +75,7 @@ private extension PlaylistImageCompilationView {
             addSubview(imageView)
             
             imageView.snp.makeConstraints { make in
-                make.size.equalTo(Self.imageSize)
+                make.size.equalTo(finalImageSize)
                 make.edges.equalToSuperview()
             }
         }
@@ -97,7 +110,7 @@ private extension PlaylistImageCompilationView {
             addSubview(stackView)
             
             stackView.snp.makeConstraints { make in
-                make.size.equalTo(Self.imageSize)
+                make.size.equalTo(finalImageSize)
                 make.edges.equalToSuperview()
             }
         }

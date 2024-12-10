@@ -13,9 +13,11 @@ final class MyLibraryViewController: UIViewController {
     // MARK: Properties
     private let tabSectionHeight: CGFloat = 60.0
     private let pillSize: CGSize = CGSize(width: 84.0, height: 34.0)
+    private var currentViewState: MyLibrarySeparatorSectionType = .grid
+    
+    private let collectionViewSpacing: CGFloat = 16.0
     
     var viewModel: MyLibraryViewModelProtocol
-    private var isUsingTableView: Bool = true
     
     // MARK: UI
     private lazy var headerView: MyLibraryHeaderSectionView = {
@@ -61,7 +63,7 @@ final class MyLibraryViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.isHidden = !isUsingTableView
+        tableView.isHidden = currentViewState == .grid
         tableView.backgroundColor = ColorTool.darkPrimary
         tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: "PlaylistTableViewCell")
         return tableView
@@ -70,10 +72,20 @@ final class MyLibraryViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        
+        let totalSpacing: CGFloat = collectionViewSpacing
+        let totalWidth: CGFloat = UIScreen.main.bounds.width
+        let itemWidth: CGFloat = (totalWidth - totalSpacing) / 2
+        
+        layout.itemSize = CGSize(width: itemWidth, height: PlaylistCollectionViewCell.calculateHeight(contentWidth: itemWidth))
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.isHidden = isUsingTableView
+        collectionView.isHidden = currentViewState == .list
+        collectionView.backgroundColor = ColorTool.darkPrimary
+        collectionView.register(PlaylistCollectionViewCell.self, forCellWithReuseIdentifier: "PlaylistCollectionViewCell")
+        
         return collectionView
     }()
     
@@ -96,7 +108,7 @@ final class MyLibraryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.loadMyPlaylists()
-        tableView.reloadData()
+        reloadPlaylistData()
     }
 }
 
@@ -144,7 +156,7 @@ private extension MyLibraryViewController {
     func setTableView() {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(separatorView.snp.bottom)
+            make.top.equalTo(separatorView.snp.bottom).offset(16.0)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -152,7 +164,7 @@ private extension MyLibraryViewController {
     func setCollectionView() {
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(separatorView.snp.bottom)
+            make.top.equalTo(separatorView.snp.bottom).offset(16.0)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -175,6 +187,15 @@ private extension MyLibraryViewController {
         let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: playlist)
         let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
         navigationController?.pushViewController(playlistVC, animated: true)
+    }
+    
+    func reloadPlaylistData() {
+        if currentViewState == .list {
+            tableView.reloadData()
+        }
+        else {
+            collectionView.reloadData()
+        }
     }
 }
 
@@ -205,13 +226,31 @@ extension MyLibraryViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: UICollectionViewDelegate & UICollectionViewDataSource
 extension MyLibraryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 0 // Replace with your data count
+        return viewModel.myPlaylist?.playlists.count ?? .zero
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "YourCellIdentifier", for: indexPath)
-        // Configure your cell here
-        return cell
+        if let cell: PlaylistCollectionViewCell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "PlaylistCollectionViewCell",
+            for: indexPath
+        ) as? PlaylistCollectionViewCell,
+           let playlist: PlaylistModel = viewModel.myPlaylist?.playlists[indexPath.row] {
+            
+            let totalSpacing: CGFloat = collectionViewSpacing
+            let totalWidth: CGFloat = UIScreen.main.bounds.width
+            let itemWidth: CGFloat = (totalWidth - totalSpacing) / 2
+            
+            cell.configure(with: playlist, contentWidth: itemWidth)
+            return cell
+        }
+        
+        return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let playlist: PlaylistModel = viewModel.myPlaylist?.playlists[indexPath.row] {
+            navigateToPlaylistDetail(with: playlist)
+        }
     }
 }
 
