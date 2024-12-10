@@ -146,8 +146,8 @@ private extension SongTableViewCell {
         self.currentMediaItem = data
         titleLabel.text = data.trackName
         subtitleLabel.text = "Song • \(data.artistName ?? "")"
-        if  let songURLString: String = data.artworkUrl100,
-            let songURL: URL = URL(string: songURLString) {
+        if let songURLString: String = data.artworkUrl100,
+           let songURL: URL = URL(string: songURLString) {
             songImageView.kf.setImage(with: songURL)
         }
     }
