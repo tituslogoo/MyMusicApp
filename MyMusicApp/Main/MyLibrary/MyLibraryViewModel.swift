@@ -12,6 +12,7 @@ protocol MyLibraryViewModelProtocol: AnyObject {
     var myPlaylist: MyPlaylistsModel? { get }
     
     func loadMyPlaylists()
+    func onNeedToSavePlaylist(playlist: PlaylistModel)
 }
 
 final class MyLibraryViewModel: MyLibraryViewModelProtocol {
@@ -20,5 +21,9 @@ final class MyLibraryViewModel: MyLibraryViewModelProtocol {
     
     func loadMyPlaylists() {
         myPlaylist = PlaylistManager.loadAllPlaylists()
+    }
+    
+    func onNeedToSavePlaylist(playlist: PlaylistModel) {
+        PlaylistManager.savePlaylist(playlist: playlist)
     }
 }

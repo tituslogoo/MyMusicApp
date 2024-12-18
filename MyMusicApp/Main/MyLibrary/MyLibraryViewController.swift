@@ -17,6 +17,7 @@ final class MyLibraryViewController: UIViewController {
     
     private let collectionViewSpacing: CGFloat = 16.0
     
+    var coordinator: MyLibraryCoordinatorDelegate
     var viewModel: MyLibraryViewModelProtocol
     
     // MARK: UI
@@ -99,7 +100,11 @@ final class MyLibraryViewController: UIViewController {
     }()
     
     // MARK: Init
-    init(viewModel: MyLibraryViewModelProtocol? = nil) {
+    init(
+        coor: MyLibraryCoordinatorDelegate,
+        viewModel: MyLibraryViewModelProtocol? = nil
+    ) {
+        coordinator = coor
         self.viewModel = viewModel ?? MyLibraryViewModel()
         super.init(nibName: nil, bundle: nil)
     }
@@ -118,6 +123,11 @@ final class MyLibraryViewController: UIViewController {
         super.viewWillAppear(animated)
         viewModel.loadMyPlaylists()
         reloadPlaylistData()
+    }
+    
+    // MARK: Public Functions
+    public func onNeedToSavePlaylist(playlist: PlaylistModel) {
+        viewModel.onNeedToSavePlaylist(playlist: playlist)
     }
 }
 
@@ -178,26 +188,6 @@ private extension MyLibraryViewController {
         }
     }
     
-    func presentCreatePlaylistTray() {
-        let trayVC = CreatePlaylistViewController()
-        trayVC.delegate = self
-        present(trayVC, animated: true)
-    }
-    
-    func onPlaylistDidCreated(withName name: String) {
-        let newPlaylist = PlaylistModel(name: name)
-        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: newPlaylist)
-        let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
-        PlaylistManager.savePlaylist(playlist: newPlaylist)
-        navigationController?.pushViewController(playlistVC, animated: true)
-    }
-    
-    func navigateToPlaylistDetail(with playlist: PlaylistModel) {
-        let viewModel: PlaylistDetailViewModel = PlaylistDetailViewModel(playlist: playlist)
-        let playlistVC: PlaylistDetailViewController = PlaylistDetailViewController(viewModel: viewModel)
-        navigationController?.pushViewController(playlistVC, animated: true)
-    }
-    
     func reloadPlaylistData() {
         if currentViewState == .list {
             tableView.reloadData()
@@ -232,7 +222,7 @@ extension MyLibraryViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let playlist: PlaylistModel = viewModel.myPlaylist?.playlists[indexPath.row] {
-            navigateToPlaylistDetail(with: playlist)
+            coordinator.onMyLibraryFlowFinished(with: playlist)
         }
     }
 }
@@ -263,7 +253,7 @@ extension MyLibraryViewController: UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let playlist: PlaylistModel = viewModel.myPlaylist?.playlists[indexPath.row] {
-            navigateToPlaylistDetail(with: playlist)
+            coordinator.onMyLibraryFlowFinished(with: playlist)
         }
     }
 }
@@ -271,27 +261,7 @@ extension MyLibraryViewController: UICollectionViewDelegate, UICollectionViewDat
 // MARK: HomeHeaderSectionViewDelegate
 extension MyLibraryViewController: MyLibraryHeaderSectionViewDelegate {
     func onPlusButtonTapped() {
-        let trayVC = AddPlaylistTrayViewController()
-        trayVC.delegate = self
-        present(trayVC, animated: true)
-    }
-}
-
-// MARK: AddPlaylistTrayViewControllerDelegate
-extension MyLibraryViewController: AddPlaylistTrayViewControllerDelegate {
-    func onPlaylistButtonTapped() {
-        dismiss(animated: true, completion: {
-            self.presentCreatePlaylistTray()
-        })
-    }
-}
-
-// MARK: CreatePlaylistViewControllerDelegate
-extension MyLibraryViewController: CreatePlaylistViewControllerDelegate {
-    func createPlaylist(with name: String) {
-        dismiss(animated: true, completion: {
-            self.onPlaylistDidCreated(withName: name)
-        })
+        coordinator.onMyLibraryCreatePlaylistFlowStarted()
     }
 }
 
@@ -299,7 +269,6 @@ extension MyLibraryViewController: CreatePlaylistViewControllerDelegate {
 extension MyLibraryViewController: MyLibrarySeparatorSectionViewDelegate {
     func didTapContentTypeButton(withType type: MyLibrarySeparatorSectionType) {
         // the type passed here is the image shown in separator view, we should use the opposite for that as state.
-        
         currentViewState = type
         separatorView.onContentTypeChanged(to: type == .grid ? .list : .grid)
         reloadPlaylistData()
