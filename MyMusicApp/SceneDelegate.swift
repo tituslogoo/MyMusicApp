@@ -20,7 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController: UITabBarController = UITabBarController()
         let homeVC: UIViewController = HomeViewController()
         let searchVC: UIViewController = SearchViewController()
-        let myLibVC: UIViewController = MyLibraryViewController()
+        
+        let myLibraryNavVC: UINavigationController = UINavigationController()
+        let myLibraryCoordinator: Coordinator = MyLibraryCoordinator(navigationController: myLibraryNavVC)
+        myLibraryCoordinator.start()
         
         let homeTabBarItem: UITabBarItem = UITabBarItem(
             title: "Home",
@@ -40,12 +43,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         homeVC.tabBarItem = homeTabBarItem
         searchVC.tabBarItem = searchTabBarItem
-        myLibVC.tabBarItem = myLibTabBarItem
+        myLibraryNavVC.tabBarItem = myLibTabBarItem
         
-        // Assign the view controllers to the tab bar controller
-        let libNavVC: UINavigationController = UINavigationController(rootViewController: myLibVC)
-        tabBarController.viewControllers = [homeVC, searchVC, libNavVC]
-
+        tabBarController.viewControllers = [homeVC, searchVC, myLibraryNavVC]
+        
         UITabBar.appearance().backgroundColor = ColorTool.darkPrimary
         UITabBar.appearance().tintColor = ColorTool.lightPrimary
         UITabBar.appearance().unselectedItemTintColor = ColorTool.darkSecondary
@@ -85,7 +86,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
