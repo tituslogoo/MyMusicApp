@@ -8,4 +8,8 @@ target 'MyMusicApp' do
   # Pods for MyMusicApp
   pod 'Kingfisher', '~> 8.0'
   pod 'SnapKit', '~> 5.7.0'
+  
+  # Unit Tests
+  pod 'Nimble'
+  pod 'Quick'
 end
