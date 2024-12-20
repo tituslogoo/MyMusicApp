@@ -1,0 +1,11 @@
+//
+//  Localizable.strings
+//  MyMusicApp
+//
+//  Created by Titus Logo on 20/12/24.
+//
+
+// Error
+"common.error.title" = "Error";
+"common.error.body.something-wrong" = "There's something wrong";
+"common.error.body.invalid-url" = "There seems to be something wrong with the requested URL";

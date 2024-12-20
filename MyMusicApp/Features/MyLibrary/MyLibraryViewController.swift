@@ -22,7 +22,7 @@ final class MyLibraryViewController: UIViewController {
     
     // MARK: UI
     private lazy var headerView: MyLibraryHeaderSectionView = {
-        let view = MyLibraryHeaderSectionView(imageUrl: viewModel.profilePictureUrl)
+        let view = MyLibraryHeaderSectionView(imageUrl: "")
         view.delegate = self
         return view
     }()
@@ -104,9 +104,11 @@ final class MyLibraryViewController: UIViewController {
         coor: MyLibraryCoordinatorDelegate,
         viewModel: MyLibraryViewModelProtocol? = nil
     ) {
+        // TODO: get user data from cache
         coordinator = coor
         self.viewModel = viewModel ?? MyLibraryViewModel()
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.action = self
     }
     
     required init?(coder: NSCoder) {
@@ -116,13 +118,14 @@ final class MyLibraryViewController: UIViewController {
     // MARK: LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.onViewDidLoad()
         setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.loadMyPlaylists()
-        reloadPlaylistData()
+        viewModel.onViewWillAppear()
+        reloadPlaylistData() // TODO: may need to move (best practice stuff)
     }
     
     // MARK: Public Functions
@@ -133,6 +136,7 @@ final class MyLibraryViewController: UIViewController {
 
 // MARK: Private Functions
 private extension MyLibraryViewController {
+    // MARK: Private Functions: UI
     func setupUI() {
         view.backgroundColor = ColorTool.darkPrimary
         setHeader()
@@ -200,6 +204,11 @@ private extension MyLibraryViewController {
     func updatePlaylistVisibility() {
         tableView.isHidden = currentViewState == .grid
         collectionView.isHidden = currentViewState == .list
+    }
+    
+    func updateProfilePicture() {
+        guard let imageURL: String = viewModel.userProfile?.profilePictureUrl else { return }
+        headerView.updateImageUrl(withUrl: imageURL)
     }
 }
 
@@ -273,5 +282,16 @@ extension MyLibraryViewController: MyLibrarySeparatorSectionViewDelegate {
         separatorView.onContentTypeChanged(to: type == .grid ? .list : .grid)
         reloadPlaylistData()
         updatePlaylistVisibility()
+    }
+}
+
+// MARK: MyLibraryViewModelAction
+extension MyLibraryViewController: MyLibraryViewModelAction {
+    func notifyToSetupUserProfile() {
+        updateProfilePicture()
+    }
+    
+    func notifyToShowError(withMessage message: String) {
+        showError(errorMessage: message)
     }
 }
