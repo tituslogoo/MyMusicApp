@@ -18,7 +18,7 @@ final class Environment {
     static var baseURL: String {
         switch current {
         case .staging:
-            //            return "https://api.staging.mymusicapp.com"
+//            return "https://api.staging.mymusicapp.com"
             return "http://0.0.0.0:3001" // Mockoon
         case .production:
             return "https://api.mymusicapp.com"

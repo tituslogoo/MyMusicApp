@@ -12,7 +12,7 @@
       "uuid": "dc654236-9762-4973-bff1-90e530c3228c",
       "type": "http",
       "documentation": "getUserProfile",
-      "method": "post",
+      "method": "get",
       "endpoint": "user/profile",
       "responses": [
         {
@@ -21,7 +21,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "",
-          "headers": [],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -47,7 +52,7 @@
     }
   ],
   "proxyMode": false,
-  "proxyHost": "https://api.staging.mymusicapp.com",
+  "proxyHost": "",
   "proxyRemovePrefix": false,
   "tlsOptions": {
     "enabled": false,
@@ -63,18 +68,6 @@
     {
       "key": "Content-Type",
       "value": "application/json"
-    },
-    {
-      "key": "Access-Control-Allow-Origin",
-      "value": "*"
-    },
-    {
-      "key": "Access-Control-Allow-Methods",
-      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
-    },
-    {
-      "key": "Access-Control-Allow-Headers",
-      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
     }
   ],
   "proxyReqHeaders": [

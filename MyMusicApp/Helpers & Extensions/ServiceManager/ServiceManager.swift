@@ -15,7 +15,7 @@ final class ServiceManager {
     /// Fetches data from the given API URL with optional parameters and headers.
     /// - Parameters:
     ///   - url: The URL to send the request to.
-    ///   - method: The HTTP method (default is GET).
+    ///   - method: The HTTP method
     ///   - headers: The HTTP headers (default is nil).
     ///   - parameters: The query parameters (default is nil).
     ///   - completion: A closure called with the result of the request (success or failure).
@@ -50,6 +50,7 @@ final class ServiceManager {
             }
         }
         
+        print("🛜 API Call: \(request.url?.absoluteString ?? "")")
         // Create data task
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle errors
@@ -75,6 +76,8 @@ final class ServiceManager {
             // Success
             completion(.success(data))
         }
+        
+        task.resume()
         
         // Return the data task
         return task

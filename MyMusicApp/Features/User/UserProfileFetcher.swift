@@ -35,7 +35,7 @@ final class UserProfileFetcher: UserProfileFetcherProtocol {
             return
         }
         
-        fetchUserProfileDataTask = ServiceManager.fetchAPI(url: url) { result in
+        fetchUserProfileDataTask = ServiceManager.fetchAPI(url: url, method: .get) { result in
             switch result {
             case .success(let data):
                 do {
