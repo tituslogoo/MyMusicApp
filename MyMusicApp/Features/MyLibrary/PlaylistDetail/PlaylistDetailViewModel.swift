@@ -20,13 +20,19 @@ final class PlaylistDetailViewModel: PlaylistDetailViewModelProtocol {
     weak var action: PlaylistDetailViewModelAction?
     var playlist: PlaylistModel
     
-    init(playlist: PlaylistModel) {
+    private var dependency: PlaylistDetailViewModelDependency
+    
+    init(
+        playlist: PlaylistModel,
+        dependency: PlaylistDetailViewModelDependency = PlaylistDetailViewModelDependency()
+    ) {
         self.playlist = playlist
+        self.dependency = dependency
     }
     
     func updatePlaylist(with playlist: PlaylistModel) {
         self.playlist = playlist
-        PlaylistManager.savePlaylist(playlist: self.playlist)
+        dependency.playlistManager.savePlaylist(playlist: self.playlist)
         action?.notifyToReloadData()
     }
 }

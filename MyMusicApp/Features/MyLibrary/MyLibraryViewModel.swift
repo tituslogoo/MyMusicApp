@@ -40,11 +40,11 @@ final class MyLibraryViewModel: MyLibraryViewModelProtocol {
     }
     
     func onViewWillAppear() {
-        myPlaylist = PlaylistManager.loadAllPlaylists()
+        myPlaylist = dependency.playlistManager.loadAllPlaylists()
     }
     
     func onNeedToSavePlaylist(playlist: PlaylistModel) {
-        PlaylistManager.savePlaylist(playlist: playlist)
+        dependency.playlistManager.savePlaylist(playlist: playlist)
     }
 }
 

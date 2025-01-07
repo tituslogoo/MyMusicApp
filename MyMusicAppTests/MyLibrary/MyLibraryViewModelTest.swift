@@ -38,7 +38,6 @@ final class MyLibraryViewModelSpec: QuickSpec {
         }
 
         describe("MyLibraryViewModelTest") {
-            
             describe("onViewDidLoad") {
                 context("API Call Success") {
                     it("should call all functions") {
@@ -103,6 +102,8 @@ final class MyLibraryViewModelSpec: QuickSpec {
                     }
                 }
             }
+            
+//            describe()
         }
     }
 }

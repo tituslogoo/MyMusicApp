@@ -9,8 +9,13 @@ import Foundation
 
 struct MyLibraryViewModelDependency {
     let userProfileFetcher: UserProfileFetcherProtocol
+    let playlistManager: PlaylistManagerProtocol
     
-    init(userProfileFetcher: UserProfileFetcherProtocol? = nil) {
+    init(
+        userProfileFetcher: UserProfileFetcherProtocol? = nil,
+        playlistManager: PlaylistManagerProtocol? = nil
+    ) {
         self.userProfileFetcher = userProfileFetcher ?? UserProfileFetcher()
+        self.playlistManager = playlistManager ?? PlaylistManager()
     }
 }
