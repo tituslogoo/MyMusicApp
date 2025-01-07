@@ -20,7 +20,7 @@ final class MyLibraryHeaderSectionView: UIView {
     static let verticalSpacer: CGFloat = 8.0
     private let plusButtonSize: CGSize = CGSize(width: 26.0, height: 26.0)
     
-    private let imageurl: String
+    private var imageUrl: String?
     var delegate: MyLibraryHeaderSectionViewDelegate?
     
     // MARK: UI
@@ -56,8 +56,11 @@ final class MyLibraryHeaderSectionView: UIView {
     }()
     
     // MARK: Init
-    init(imageUrl: String) {
-        self.imageurl = imageUrl
+    init(imageUrl: String?) {
+        if let url: String = imageUrl {
+            self.imageUrl = imageUrl
+        }
+        
         super.init(frame: .zero)
         setupView()
         setupData()
@@ -68,6 +71,11 @@ final class MyLibraryHeaderSectionView: UIView {
     }
     
     // MARK: Public Functions
+    public func updateImageUrl(withUrl imageUrl: String) {
+        self.imageUrl = imageUrl
+        setupData()
+    }
+    
     public static func calculateHeight() -> CGFloat {
         return profilePictureSize.height + (verticalSpacer * 2)
     }
@@ -103,7 +111,10 @@ private extension MyLibraryHeaderSectionView {
     }
     
     func setupData() {
-        profileImageView.kf.setImage(with: URL(string: imageurl))
+        profileImageView.kf.setImage(
+            with: URL(string: imageUrl ?? ""),
+            placeholder: UIImage(named: "ic-placeholder")
+        )
     }
     
     @objc
