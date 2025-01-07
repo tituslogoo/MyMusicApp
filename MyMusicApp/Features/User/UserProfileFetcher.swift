@@ -15,8 +15,8 @@ protocol UserProfileFetcherProtocol: AnyObject {
     ///   - successBlock: on API Success - Returns `UserModel`
     ///   - failureBlock: on API Failure - Returns error message
     func fetchUserProfile(
-        successBlock: ((UserModel) -> Void)?,
-        failureBlock: ((String) -> Void)?
+        successBlock: ((UserModel?) -> Void)?,
+        failureBlock: ((String?) -> Void)?
     )
 }
 
@@ -24,8 +24,8 @@ final class UserProfileFetcher: UserProfileFetcherProtocol {
     var fetchUserProfileDataTask: URLSessionDataTask?
     
     func fetchUserProfile(
-        successBlock: ((UserModel) -> Void)?,
-        failureBlock: ((String) -> Void)?
+        successBlock: ((UserModel?) -> Void)?,
+        failureBlock: ((String?) -> Void)?
     ) {
         guard fetchUserProfileDataTask == nil else { return }
         

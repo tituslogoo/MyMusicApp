@@ -52,14 +52,19 @@ final class MyLibraryViewModel: MyLibraryViewModelProtocol {
 private extension MyLibraryViewModel {
     func fetchUserProfile() {
         dependency.userProfileFetcher.fetchUserProfile { [weak self] user in
-            guard let self else {
+            guard let self = self,
+                  let user: UserModel = user
+            else {
+                self?.action?.notifyToShowError(withMessage: ServiceManager.defaultErrorMessage)
                 return
             }
             
             userProfile = user
             action?.notifyToSetupUserProfile()
         } failureBlock: { [weak self] errorMessage in
-            guard let self else {
+            guard let self = self,
+                  let errorMessage: String = errorMessage
+            else {
                 self?.action?.notifyToShowError(withMessage: ServiceManager.defaultErrorMessage)
                 return
             }

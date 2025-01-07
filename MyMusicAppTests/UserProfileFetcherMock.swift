@@ -11,7 +11,9 @@ import Foundation
 // MARK: UserProfileFetcherState
 enum UserProfileFetcherState {
     case success
+    case successNil
     case failure
+    case failureNil
 }
 
 // MARK: UserProfileFetcherMock
@@ -23,22 +25,24 @@ final class UserProfileFetcherMock: UserProfileFetcherProtocol {
     var isFetchUserProfileCalled: Bool = false
     var isFetchUserProfileCallSuccess: Bool = false
     
-    func fetchUserProfile(successBlock: ((MyMusicApp.UserModel) -> Void)?, failureBlock: ((String) -> Void)?) {
+    func fetchUserProfile(successBlock: ((MyMusicApp.UserModel?) -> Void)?, failureBlock: ((String?) -> Void)?) {
         isFetchUserProfileCalled = true
         
         switch serviceState {
         case .success:
-            if let userModelMock: UserModel = JSONHelper.readJSON(from: "UserModelSuccess", type: UserModel.self) {
-                isFetchUserProfileCallSuccess = true
-                successBlock?(userModelMock)
-            }
-            else {
-                isFetchUserProfileCallSuccess = false
-                failureBlock?("userModelMock decoding failed")
-            }
+            isFetchUserProfileCallSuccess = true
+            successBlock?(JSONHelper.readJSON(from: "UserModelSuccess", type: UserModel.self))
+        case .successNil:
+            // To test guard
+            isFetchUserProfileCallSuccess = true
+            successBlock?(nil)
         case .failure:
             isFetchUserProfileCallSuccess = false
             failureBlock?(ServiceManager.defaultErrorMessage)
+        case .failureNil:
+            // To test guard
+            isFetchUserProfileCallSuccess = false
+            failureBlock?(nil)
         }
     }
 }

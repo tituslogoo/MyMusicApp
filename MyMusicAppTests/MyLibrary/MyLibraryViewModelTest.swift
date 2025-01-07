@@ -54,44 +54,55 @@ final class MyLibraryViewModelSpec: QuickSpec {
                         expect(actionMock.notifyToShowErrorMessage).to(beNil())
                     }
                 }
+                
+                context("API Call Success, response is nil") {
+                    it("should hit exception handling") {
+                        fetcherMock.serviceState = .successNil
+                        viewModel.onViewDidLoad()
+                        
+                        expect(viewModel.userProfile).to(beNil())
+                        expect(viewModel.userProfile?.username).to(beNil())
+                        expect(viewModel.userProfile?.id).to(beNil())
+                        expect(viewModel.userProfile?.profilePictureUrl).to(beNil())
+                        
+                        expect(actionMock.isNotifyToSetupUserProfileCalled).to(beFalse())
+                        expect(actionMock.isNotifyToShowErrorCalled).to(beTrue())
+                        expect(actionMock.notifyToShowErrorMessage).to(equal(ServiceManager.defaultErrorMessage))
+                    }
+                }
+                
+                context("API Call Failed") {
+                    it("should go to error route") {
+                        fetcherMock.serviceState = .failure
+                        viewModel.onViewDidLoad()
+                        
+                        expect(viewModel.userProfile).to(beNil())
+                        expect(viewModel.userProfile?.username).to(beNil())
+                        expect(viewModel.userProfile?.id).to(beNil())
+                        expect(viewModel.userProfile?.profilePictureUrl).to(beNil())
+                        
+                        expect(actionMock.isNotifyToSetupUserProfileCalled).to(beFalse())
+                        expect(actionMock.isNotifyToShowErrorCalled).to(beTrue())
+                        expect(actionMock.notifyToShowErrorMessage).to(equal(ServiceManager.defaultErrorMessage))
+                    }
+                }
+                
+                context("API Call Failed, errorMessage nil") {
+                    it("should go to error route") {
+                        fetcherMock.serviceState = .failureNil
+                        viewModel.onViewDidLoad()
+                        
+                        expect(viewModel.userProfile).to(beNil())
+                        expect(viewModel.userProfile?.username).to(beNil())
+                        expect(viewModel.userProfile?.id).to(beNil())
+                        expect(viewModel.userProfile?.profilePictureUrl).to(beNil())
+                        
+                        expect(actionMock.isNotifyToSetupUserProfileCalled).to(beFalse())
+                        expect(actionMock.isNotifyToShowErrorCalled).to(beTrue())
+                        expect(actionMock.notifyToShowErrorMessage).to(equal(ServiceManager.defaultErrorMessage))
+                    }
+                }
             }
-            
-            
-//            describe("onViewWillAppear") {
-//                
-//            }
-//            
-//            // Sample
-//            it("has the correct default profile picture URL") {
-//                expect(viewModel.profilePictureUrl).to(equal("https://picsum.photos/50/50"))
-//            }
-//
-//            context("when loading playlists") {
-//                it("should set myPlaylist to the playlists returned by PlaylistManager") {
-//                    // Prepare mock data
-//                    let mockPlaylists = MyPlaylistsModel(playlists: [PlaylistModel(name: "Test Playlist", songs: [])])
-//                    mockPlaylistManager.mockPlaylists = mockPlaylists
-//
-//                    // Call method
-//                    viewModel.loadMyPlaylists()
-//
-//                    // Verify
-//                    expect(viewModel.myPlaylist).to(equal(mockPlaylists))
-//                }
-//            }
-//
-//            context("when saving a playlist") {
-//                it("should call savePlaylist on PlaylistManager") {
-//                    // Prepare mock playlist
-//                    let testPlaylist = PlaylistModel(name: "Saved Playlist", songs: [])
-//
-//                    // Call method
-//                    viewModel.onNeedToSavePlaylist(playlist: testPlaylist)
-//
-//                    // Verify
-//                    expect(mockPlaylistManager.savedPlaylist).to(equal(testPlaylist))
-//                }
-//            }
         }
     }
 }
